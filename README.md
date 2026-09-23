@@ -1,50 +1,40 @@
-# data-cleaning-project
-Data cleaning project # Dataset Cleaning README
+import pandas as pd
 
-## Dataset
+df=pd.read_csv(r"c:\Users\Mark\Desktop\DATA CLEANING .csv", encoding="latin1")
+print(df)
 
-Online Retail Transaction Dataset
+# Remove duplicates
+df = df.drop_duplicates()
 
-## Cleaning Summary
 
-The dataset was reviewed for data quality issues and cleaned to improve consistency and usability for analysis.
+# Handle missing descriptions
+df["Description"] = df["Description"].fillna("Unknown")
 
-### 1. Missing Values
+# Convert date
+df["InvoiceDate"] = pd.to_datetime(
+    df["InvoiceDate"],
+    dayfirst=True
+)
 
-* **Description:** 1,454 missing values identified.
+# Customer ID as integer
+df["Customer ID"] = df["Customer ID"].astype("Int64")
 
-  * Replaced with `"Unknown"` where appropriate.
-* **Customer ID:** 135,080 missing values identified.
+# Standardize text columns
+df["Country"] = (
+    df["Country"]
+    .str.strip()
+    .str.title()
+)
 
-  * Retained as NULL/blank because customer information was unavailable.
 
-### 2. Duplicate Records
+df["Description"] = (
+    df["Description"]
+    .str.strip()
+    .str.upper()
+)
 
-* Found **5,268 duplicate rows**.
-* Removed all exact duplicate records.
-
-### 3. Data Type Corrections
-
-* **InvoiceDate** converted from text format to DateTime format.
-* **Customer ID** converted from floating-point values to integer identifiers.
-
-### 4. Standardization
-
-* Trimmed leading and trailing spaces from text fields.
-* Standardized **Country** values for consistent capitalization.
-* Standardized **Description** values to a consistent text format.
-
-## Result
-
-The cleaned dataset:
-
-* Contains no duplicate records.
-* Uses appropriate data types for dates and identifiers.
-* Has standardized text values.
-* Is ready for further analysis in Excel, SQL, Python, Power BI, or machine learning workflows.
-
-## Files
-
-* `DATA CLEANING.csv` – Original dataset
-* `Cleaned_Data.csv` – Cleaned dataset
-
+# Save cleaned file
+df.to_csv(
+    "Cleaned_Data.csv",
+    index=False
+)
